@@ -1,0 +1,16 @@
+# Java / Maven
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Angular / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+coverage/
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings/
