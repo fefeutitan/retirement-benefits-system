@@ -70,14 +70,20 @@ public class BeneficioService {
         Beneficio beneficio = buscar(beneficioId);
         Documento documento = new Documento(nomeArquivo, tipoMime, categoria, conteudo);
         beneficio.adicionarDocumento(documento);
-        beneficioRepository.save(beneficio);
-        return documento;
+        return documentoRepository.saveAndFlush(documento);
     }
 
     @Transactional(readOnly = true)
     public List<Documento> listarDocumentos(Long beneficioId) {
         buscar(beneficioId);
         return documentoRepository.findByBeneficioIdOrderByAnexadoEmDesc(beneficioId);
+    }
+
+    @Transactional(readOnly = true)
+    public Documento buscarDocumento(Long beneficioId, Long documentoId) {
+        buscar(beneficioId);
+        return documentoRepository.findByIdAndBeneficioId(documentoId, beneficioId)
+                .orElseThrow(() -> naoEncontrado("Documento"));
     }
 
     @Transactional
@@ -87,8 +93,7 @@ public class BeneficioService {
                 .findFirst().map(Tramitacao::getSetorDestino).orElse("Protocolo");
         Tramitacao tramitacao = new Tramitacao(setorOrigem, setorDestino, responsavel, observacao);
         beneficio.adicionarTramitacao(tramitacao);
-        beneficioRepository.save(beneficio);
-        return tramitacao;
+        return tramitacaoRepository.saveAndFlush(tramitacao);
     }
 
     @Transactional(readOnly = true)

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,8 @@ public class DocumentoController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public DocumentoResponse anexar(@PathVariable Long beneficioId, @RequestParam DocumentoCategoria categoria,
             @RequestParam MultipartFile arquivo) throws java.io.IOException {
-        Documento documento = service.anexarDocumento(beneficioId, categoria, arquivo.getOriginalFilename(),
+        Documento documento = service.anexarDocumento(beneficioId, categoria,
+                arquivo.getOriginalFilename() == null ? "documento.pdf" : arquivo.getOriginalFilename(),
                 arquivo.getContentType(), arquivo.getBytes());
         return DocumentoResponse.from(documento);
     }
@@ -41,12 +43,18 @@ public class DocumentoController {
 
     @GetMapping("/{documentoId}/conteudo")
     public ResponseEntity<ByteArrayResource> baixar(@PathVariable Long beneficioId, @PathVariable Long documentoId) {
-        Documento documento = service.listarDocumentos(beneficioId).stream()
-                .filter(item -> item.getId().equals(documentoId)).findFirst()
-                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.NOT_FOUND, "Documento não encontrado"));
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(documento.getTipoMime()))
+        Documento documento = service.buscarDocumento(beneficioId, documentoId);
+        MediaType tipoMime = MediaType.APPLICATION_PDF;
+        if (documento.getTipoMime() != null) {
+            try {
+                tipoMime = MediaType.parseMediaType(documento.getTipoMime());
+            } catch (InvalidMediaTypeException ignored) {
+                // Documentos antigos sem MIME válido continuam sendo tratados como PDF.
+            }
+        }
+        return ResponseEntity.ok().contentType(tipoMime)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + documento.getNomeArquivo() + "\"")
+                .contentLength(documento.getConteudo().length)
                 .body(new ByteArrayResource(documento.getConteudo()));
     }
 }
