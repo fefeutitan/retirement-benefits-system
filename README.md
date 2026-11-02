@@ -1,6 +1,10 @@
-# beneficios_online
+# Benefícios Online — Teste técnico SEPLAG/COTEC
 
-Aplicação de benefícios online com backend Spring Boot e frontend Angular.
+Projeto de portfólio desenvolvido para um **teste de seleção da SEPLAG/COTEC**, com foco em **benefícios de aposentadoria** e implementação em Java/Spring Boot e Angular.
+
+> **Esclarecimento:** Este repositório **não corresponde ao sistema homônimo “Benefícios onLine” desenvolvido profissionalmente na COGERH**. São projetos distintos, com contextos e finalidades diferentes.
+
+Aplicação com backend Spring Boot e frontend Angular.
 
 ## Estrutura
 
