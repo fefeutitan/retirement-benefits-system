@@ -15,6 +15,8 @@ A retirement-benefit request involves identifying a public servant, recording a 
 - Record the movement of requests between departments (*tramitação*).
 - Expose REST endpoints for the application workflow.
 - Provide a separate Angular frontend for interacting with the backend.
+- Store documents in S3 when the AWS integration is enabled, with database fallback for local H2 development.
+- Publish domain events through SNS and consume them through SQS with retry, DLQ and idempotency protection.
 
 These describe the project's intended and implemented code areas; they are not claims of production deployment or exhaustive end-to-end test coverage.
 
@@ -27,11 +29,13 @@ These describe the project's intended and implemented code areas; they are not c
 | Validation | Spring Boot Validation |
 | Database | H2 for local development; PostgreSQL 17 for the containerized setup |
 | Schema management | Flyway |
-| API documentation | Springdoc OpenAPI / Swagger UI |
-| Frontend | Angular, TypeScript |
-| Build and deployment | Maven Wrapper, Docker, Docker Compose |
-| Cloud infrastructure | AWS S3, SNS, SQS, IAM, Terraform |
-| Testing dependencies | Spring Boot Test |
+| API documentation | Springdoc OpenAPI 3 / Swagger UI |
+| Frontend | Angular 21, TypeScript, Router, Reactive Forms, Signals |
+| AWS integration | AWS SDK for Java 2.x, S3, SNS, SQS, DLQ |
+| Local cloud emulation | LocalStack |
+| Infrastructure as code | Terraform, IAM least-privilege policies |
+| Build and deployment | Maven Wrapper, npm, Docker, Docker Compose |
+| Testing | Spring Boot Test, Vitest configuration, Playwright configuration |
 
 ## Repository structure
 
