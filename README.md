@@ -30,6 +30,7 @@ These describe the project's intended and implemented code areas; they are not c
 | API documentation | Springdoc OpenAPI / Swagger UI |
 | Frontend | Angular, TypeScript |
 | Build and deployment | Maven Wrapper, Docker, Docker Compose |
+| Cloud infrastructure | AWS S3, SNS, SQS, IAM, Terraform |
 | Testing dependencies | Spring Boot Test |
 
 ## Repository structure
@@ -40,6 +41,7 @@ These describe the project's intended and implemented code areas; they are not c
 ├── frontend/          # Angular web application
 ├── docs/              # Supporting documentation
 ├── docker-compose.yml # Backend, PostgreSQL and LocalStack services
+├── terraform/         # AWS infrastructure and least-privilege IAM
 └── README.md
 ```
 
@@ -71,6 +73,8 @@ docker compose up --build
 ```
 
 The Docker Compose credentials are development examples and must not be reused for a public deployment. The frontend is not included as a service in this Compose file. See [AWS and messaging](docs/aws-messaging.md) for the SNS/SQS flow and AWS configuration.
+
+The `terraform/` directory contains the AWS version of the infrastructure, including S3, SNS, SQS, the DLQ and the backend IAM role. Use LocalStack for local development and review `terraform plan` before any real AWS apply.
 
 ## Scope and limitations
 

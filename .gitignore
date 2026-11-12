@@ -8,6 +8,13 @@ frontend/dist/
 frontend/.angular/
 coverage/
 
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+terraform/terraform.tfvars.json
+
 # IDE
 .idea/
 *.iml

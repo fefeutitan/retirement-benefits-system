@@ -7,3 +7,4 @@ Documentação funcional e técnica do projeto `beneficios_online`.
 - [Arquitetura](architecture.md)
 - [Como executar](getting-started.md)
 - [AWS e mensageria](aws-messaging.md)
+- [Infraestrutura AWS com Terraform](../terraform/README.md)

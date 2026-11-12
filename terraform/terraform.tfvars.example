@@ -1,0 +1,4 @@
+project_name          = "retirement-benefits-system"
+environment           = "dev"
+aws_region            = "sa-east-1"
+documents_bucket_name = "replace-with-a-globally-unique-bucket-name"
