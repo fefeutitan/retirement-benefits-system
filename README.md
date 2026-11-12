@@ -35,7 +35,7 @@ These describe the project's intended and implemented code areas; they are not c
 | Local cloud emulation | LocalStack |
 | Infrastructure as code | Terraform, IAM least-privilege policies |
 | Build and deployment | Maven Wrapper, npm, Docker, Docker Compose |
-| Testing | Spring Boot Test, Vitest configuration, Playwright configuration |
+| Testing | JUnit 5, Spring Boot Test, MockMvc, Vitest configuration, Playwright configuration |
 
 ## Repository structure
 
