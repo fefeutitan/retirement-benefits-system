@@ -39,7 +39,7 @@ These describe the project's intended and implemented code areas; they are not c
 ├── backend/           # Spring Boot REST API, domain, persistence and migrations
 ├── frontend/          # Angular web application
 ├── docs/              # Supporting documentation
-├── docker-compose.yml # Backend and PostgreSQL services
+├── docker-compose.yml # Backend, PostgreSQL and LocalStack services
 └── README.md
 ```
 
@@ -64,13 +64,13 @@ npm install
 npm start
 ```
 
-The repository also includes a `docker-compose.yml` defining PostgreSQL and the backend. To try that setup from the repository root:
+The repository also includes a `docker-compose.yml` defining PostgreSQL, the backend and LocalStack with SNS/SQS. The backend image uses a multi-stage Docker build and does not require a locally generated JAR. To try that setup from the repository root:
 
 ```bash
 docker compose up --build
 ```
 
-The Docker Compose credentials are development examples and must not be reused for a public deployment. The frontend is not included as a service in this Compose file.
+The Docker Compose credentials are development examples and must not be reused for a public deployment. The frontend is not included as a service in this Compose file. See [AWS and messaging](docs/aws-messaging.md) for the SNS/SQS flow and AWS configuration.
 
 ## Scope and limitations
 

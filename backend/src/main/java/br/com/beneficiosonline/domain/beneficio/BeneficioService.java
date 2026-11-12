@@ -13,6 +13,8 @@ import br.com.beneficiosonline.domain.documento.DocumentoCategoria;
 import br.com.beneficiosonline.domain.documento.DocumentoRepository;
 import br.com.beneficiosonline.domain.tramitacao.Tramitacao;
 import br.com.beneficiosonline.domain.tramitacao.TramitacaoRepository;
+import br.com.beneficiosonline.integration.events.BeneficioCriadoEvent;
+import br.com.beneficiosonline.integration.events.DomainEventPublisher;
 
 @Service
 public class BeneficioService {
@@ -20,18 +22,22 @@ public class BeneficioService {
     private final BeneficioRepository beneficioRepository;
     private final DocumentoRepository documentoRepository;
     private final TramitacaoRepository tramitacaoRepository;
+    private final DomainEventPublisher eventPublisher;
 
     public BeneficioService(BeneficioRepository beneficioRepository, DocumentoRepository documentoRepository,
-            TramitacaoRepository tramitacaoRepository) {
+            TramitacaoRepository tramitacaoRepository, DomainEventPublisher eventPublisher) {
         this.beneficioRepository = beneficioRepository;
         this.documentoRepository = documentoRepository;
         this.tramitacaoRepository = tramitacaoRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public Beneficio criar(BeneficioRequest request) {
-        return beneficioRepository.save(new Beneficio(request.servidorNome(), request.servidorCpf(),
+        Beneficio beneficio = beneficioRepository.save(new Beneficio(request.servidorNome(), request.servidorCpf(),
                 request.servidorOrgao(), request.servidorMatricula()));
+        eventPublisher.publish(BeneficioCriadoEvent.of(beneficio.getId(), beneficio.getServidorNome()));
+        return beneficio;
     }
 
     @Transactional(readOnly = true)
