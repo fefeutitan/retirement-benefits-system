@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
+import software.amazon.awssdk.services.sqs.model.MessageSystemAttributeName;
 
 @Component
 @ConditionalOnProperty(name = "app.aws.enabled", havingValue = "true")
@@ -29,12 +30,15 @@ public class SqsDomainEventConsumer {
     @Scheduled(fixedDelayString = "${app.aws.consumer-delay-ms:2000}")
     public void consume() {
         var response = sqsClient.receiveMessage(ReceiveMessageRequest.builder()
-                .queueUrl(properties.getSqsQueueUrl()).maxNumberOfMessages(10).waitTimeSeconds(1).build());
+                .queueUrl(properties.getSqsQueueUrl()).maxNumberOfMessages(10).waitTimeSeconds(1)
+                .messageSystemAttributeNames(MessageSystemAttributeName.APPROXIMATE_RECEIVE_COUNT).build());
         response.messages().forEach(message -> {
             try {
                 JsonNode envelope = objectMapper.readTree(message.body());
                 String eventJson = envelope.has("Message") ? envelope.get("Message").asText() : message.body();
-                log.info("Evento recebido da SQS: {}", objectMapper.readTree(eventJson));
+                log.info("Evento recebido da SQS (tentativa {}): {}",
+                        message.attributes().get(MessageSystemAttributeName.APPROXIMATE_RECEIVE_COUNT),
+                        objectMapper.readTree(eventJson));
                 sqsClient.deleteMessage(DeleteMessageRequest.builder().queueUrl(properties.getSqsQueueUrl())
                         .receiptHandle(message.receiptHandle()).build());
             } catch (Exception exception) {

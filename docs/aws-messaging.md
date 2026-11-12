@@ -18,9 +18,14 @@ SQS queue: benefit-events-queue
         |
         v
 Consumidor agendado do backend processa e remove a mensagem
+        |
+        v
+Após 3 falhas: benefit-events-dlq
 ```
 
 O SNS permite fan-out para múltiplos consumidores. A SQS fornece retenção, retry e processamento desacoplado. A mensagem só é removida depois de ser processada com sucesso; em caso de erro, permanece disponível para uma nova tentativa.
+
+A fila principal possui uma redrive policy com `maxReceiveCount=3`. Se o consumidor falhar três vezes e não apagar a mensagem, a mensagem é encaminhada automaticamente para `benefit-events-dlq`, evitando retry infinito na fila principal.
 
 ## Executar localmente
 
