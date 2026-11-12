@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import br.com.beneficiosonline.integration.events.IdempotentEventHandler;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
@@ -20,11 +21,14 @@ public class SqsDomainEventConsumer {
     private final SqsClient sqsClient;
     private final AwsProperties properties;
     private final ObjectMapper objectMapper;
+    private final IdempotentEventHandler eventHandler;
 
-    public SqsDomainEventConsumer(SqsClient sqsClient, AwsProperties properties, ObjectMapper objectMapper) {
+    public SqsDomainEventConsumer(SqsClient sqsClient, AwsProperties properties, ObjectMapper objectMapper,
+            IdempotentEventHandler eventHandler) {
         this.sqsClient = sqsClient;
         this.properties = properties;
         this.objectMapper = objectMapper;
+        this.eventHandler = eventHandler;
     }
 
     @Scheduled(fixedDelayString = "${app.aws.consumer-delay-ms:2000}")
@@ -36,9 +40,11 @@ public class SqsDomainEventConsumer {
             try {
                 JsonNode envelope = objectMapper.readTree(message.body());
                 String eventJson = envelope.has("Message") ? envelope.get("Message").asText() : message.body();
-                log.info("Evento recebido da SQS (tentativa {}): {}",
+                JsonNode event = objectMapper.readTree(eventJson);
+                boolean processed = eventHandler.process(event);
+                log.info("Evento recebido da SQS (tentativa {}, novo={}): {}",
                         message.attributes().get(MessageSystemAttributeName.APPROXIMATE_RECEIVE_COUNT),
-                        objectMapper.readTree(eventJson));
+                        processed, event);
                 sqsClient.deleteMessage(DeleteMessageRequest.builder().queueUrl(properties.getSqsQueueUrl())
                         .receiptHandle(message.receiptHandle()).build());
             } catch (Exception exception) {
