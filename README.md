@@ -49,6 +49,21 @@ These describe the project's intended and implemented code areas; they are not c
 └── README.md
 ```
 
+## Visão geral
+
+```mermaid
+flowchart LR
+    User[Operador] --> Browser[Navegador]
+    Browser --> Angular[Angular 21]
+    Angular --> API[Spring Boot REST API]
+    API --> DB[(PostgreSQL prod / H2 local)]
+    API --> Storage[S3 AWS ou LocalStack / H2 fallback]
+    API --> SNS[SNS AWS ou LocalStack]
+    SNS --> SQS[SQS principal]
+    SQS --> Consumer[Consumidor idempotente]
+    Consumer --> DLQ[DLQ após 3 falhas]
+```
+
 ## Running locally
 
 **Prerequisites:** JDK 21 and Node.js/npm compatible with the Angular project.
