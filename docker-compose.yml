@@ -55,6 +55,20 @@ services:
       - ./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
       - localstack-data:/var/lib/localstack
 
+  sonarqube:
+    image: sonarqube:community
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+
 volumes:
   beneficios-postgres:
   localstack-data:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:

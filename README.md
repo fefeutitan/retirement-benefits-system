@@ -35,7 +35,7 @@ These describe the project's intended and implemented code areas; they are not c
 | Local cloud emulation | LocalStack |
 | Infrastructure as code | Terraform, IAM least-privilege policies |
 | Build and deployment | Maven Wrapper, npm, Docker, Docker Compose |
-| Testing | JUnit 5, Spring Boot Test, MockMvc, Vitest configuration, Playwright configuration |
+| Testing and quality | JUnit 5, Spring Boot Test, MockMvc, JaCoCo, SonarQube, Vitest configuration, Playwright configuration |
 
 ## Repository structure
 
@@ -94,6 +94,8 @@ docker compose up --build
 The Docker Compose credentials are development examples and must not be reused for a public deployment. The frontend is not included as a service in this Compose file. See [AWS and messaging](docs/aws-messaging.md) for the SNS/SQS flow and AWS configuration.
 
 The `terraform/` directory contains the AWS version of the infrastructure, including S3, SNS, SQS, the DLQ and the backend IAM role. Use LocalStack for local development and review `terraform plan` before any real AWS apply.
+
+SonarQube can be started locally with `docker compose up -d sonarqube`; see [SonarQube and quality](docs/sonarqube.md) for coverage and analysis commands.
 
 ## Architecture roadmap
 

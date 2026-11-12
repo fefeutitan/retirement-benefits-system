@@ -14,6 +14,7 @@ terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/terraform.tfvars
 terraform/terraform.tfvars.json
+.scannerwork/
 
 # IDE
 .idea/
