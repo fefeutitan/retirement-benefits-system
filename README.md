@@ -76,6 +76,15 @@ The Docker Compose credentials are development examples and must not be reused f
 
 The `terraform/` directory contains the AWS version of the infrastructure, including S3, SNS, SQS, the DLQ and the backend IAM role. Use LocalStack for local development and review `terraform plan` before any real AWS apply.
 
+## Architecture roadmap
+
+The current implementation uses AWS SNS/SQS for event publication and asynchronous processing. The project is being evolved to evaluate additional messaging technologies in focused scenarios:
+
+- **RabbitMQ** for work queues, routing through exchanges and document-processing tasks;
+- **Apache Kafka** for event streaming, durable event history, replay and multiple independent consumers.
+
+These technologies are planned as complementary alternatives for specific workloads, not as simultaneous replacements for SNS/SQS. SNS/SQS remains the primary AWS-native messaging path, while RabbitMQ and Kafka will be evaluated through isolated Docker Compose profiles and documented trade-offs.
+
 ## Scope and limitations
 
 - Built as a **recruitment technical assessment and portfolio demonstration**, not a government production application.
