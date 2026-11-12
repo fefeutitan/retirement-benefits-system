@@ -2,6 +2,7 @@
 set -e
 
 awslocal sns create-topic --name benefit-events
+awslocal s3 mb s3://benefit-documents
 awslocal sqs create-queue --queue-name benefit-events-dlq
 awslocal sqs create-queue \
   --queue-name benefit-events-queue \

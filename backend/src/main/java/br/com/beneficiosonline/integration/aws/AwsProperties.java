@@ -9,6 +9,7 @@ public class AwsProperties {
     private String endpoint;
     private String snsTopicArn;
     private String sqsQueueUrl;
+    private String s3Bucket = "benefit-documents";
 
     public boolean isEnabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
@@ -20,4 +21,6 @@ public class AwsProperties {
     public void setSnsTopicArn(String snsTopicArn) { this.snsTopicArn = snsTopicArn; }
     public String getSqsQueueUrl() { return sqsQueueUrl; }
     public void setSqsQueueUrl(String sqsQueueUrl) { this.sqsQueueUrl = sqsQueueUrl; }
+    public String getS3Bucket() { return s3Bucket; }
+    public void setS3Bucket(String s3Bucket) { this.s3Bucket = s3Bucket; }
 }

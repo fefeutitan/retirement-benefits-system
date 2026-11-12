@@ -15,6 +15,8 @@ import br.com.beneficiosonline.domain.tramitacao.Tramitacao;
 import br.com.beneficiosonline.domain.tramitacao.TramitacaoRepository;
 import br.com.beneficiosonline.integration.events.BeneficioCriadoEvent;
 import br.com.beneficiosonline.integration.events.DomainEventPublisher;
+import br.com.beneficiosonline.integration.storage.DocumentStorage;
+import java.util.UUID;
 
 @Service
 public class BeneficioService {
@@ -23,13 +25,16 @@ public class BeneficioService {
     private final DocumentoRepository documentoRepository;
     private final TramitacaoRepository tramitacaoRepository;
     private final DomainEventPublisher eventPublisher;
+    private final DocumentStorage documentStorage;
 
     public BeneficioService(BeneficioRepository beneficioRepository, DocumentoRepository documentoRepository,
-            TramitacaoRepository tramitacaoRepository, DomainEventPublisher eventPublisher) {
+            TramitacaoRepository tramitacaoRepository, DomainEventPublisher eventPublisher,
+            DocumentStorage documentStorage) {
         this.beneficioRepository = beneficioRepository;
         this.documentoRepository = documentoRepository;
         this.tramitacaoRepository = tramitacaoRepository;
         this.eventPublisher = eventPublisher;
+        this.documentStorage = documentStorage;
     }
 
     @Transactional
@@ -74,7 +79,11 @@ public class BeneficioService {
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "O conteúdo não é um PDF válido");
         }
         Beneficio beneficio = buscar(beneficioId);
-        Documento documento = new Documento(nomeArquivo, tipoMime, categoria, conteudo);
+        String storageKey = "beneficios/" + beneficioId + "/" + UUID.randomUUID() + "-" + nomeArquivo;
+        documentStorage.store(storageKey, tipoMime, conteudo);
+        Documento documento = new Documento(nomeArquivo, tipoMime, categoria,
+                documentStorage instanceof br.com.beneficiosonline.integration.storage.S3DocumentStorage ? null : conteudo,
+                storageKey);
         beneficio.adicionarDocumento(documento);
         return documentoRepository.saveAndFlush(documento);
     }
@@ -90,6 +99,11 @@ public class BeneficioService {
         buscar(beneficioId);
         return documentoRepository.findByIdAndBeneficioId(documentoId, beneficioId)
                 .orElseThrow(() -> naoEncontrado("Documento"));
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] carregarConteudoDocumento(Long beneficioId, Long documentoId) {
+        return documentStorage.load(buscarDocumento(beneficioId, documentoId));
     }
 
     @Transactional

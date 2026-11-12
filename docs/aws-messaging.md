@@ -1,6 +1,8 @@
-# AWS e mensageria local
+# AWS, armazenamento e mensageria local
 
-O projeto demonstra integração assíncrona usando AWS SNS e SQS. No ambiente Docker Compose, os serviços são executados pelo LocalStack para evitar dependência de uma conta AWS durante o desenvolvimento.
+O projeto demonstra armazenamento de documentos com S3 e integração assíncrona usando AWS SNS e SQS. No ambiente Docker Compose, os serviços são executados pelo LocalStack para evitar dependência de uma conta AWS durante o desenvolvimento.
+
+Quando `APP_AWS_ENABLED=true`, os PDFs são armazenados no bucket `benefit-documents` e o PostgreSQL guarda apenas a chave do objeto. No perfil padrão, o conteúdo permanece no H2 para facilitar o desenvolvimento sem infraestrutura externa.
 
 ## Fluxo
 
@@ -39,7 +41,7 @@ Serviços:
 
 - API: `http://localhost:8080`
 - Swagger: `http://localhost:8080/swagger-ui.html`
-- LocalStack: `http://localhost:4566`
+- LocalStack: `http://localhost:4566` (S3, SNS e SQS)
 - PostgreSQL: `localhost:5432`
 
 Para executar o backend sem AWS/LocalStack, use o perfil padrão. Nesse modo, `APP_AWS_ENABLED` é `false` e os eventos são ignorados pelo publicador no-op.

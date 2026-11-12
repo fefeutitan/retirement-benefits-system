@@ -33,8 +33,11 @@ public class Documento {
     @Column(nullable = false)
     private DocumentoCategoria categoria;
 
-    @Column(nullable = false, columnDefinition = "BYTEA")
+    @Column(nullable = true, columnDefinition = "BYTEA")
     private byte[] conteudo;
+
+    @Column(name = "s3_key", length = 500)
+    private String s3Key;
 
     @Column(nullable = false)
     private Instant anexadoEm;
@@ -55,6 +58,11 @@ public class Documento {
         this.anexadoEm = Instant.now();
     }
 
+    public Documento(String nomeArquivo, String tipoMime, DocumentoCategoria categoria, byte[] conteudo, String s3Key) {
+        this(nomeArquivo, tipoMime, categoria, conteudo);
+        this.s3Key = s3Key;
+    }
+
     public void vincularAo(Beneficio beneficio) { this.beneficio = beneficio; }
     public Long getId() { return id; }
     public String getNomeArquivo() { return nomeArquivo; }
@@ -62,5 +70,6 @@ public class Documento {
     public long getTamanho() { return tamanho; }
     public DocumentoCategoria getCategoria() { return categoria; }
     public byte[] getConteudo() { return conteudo; }
+    public String getS3Key() { return s3Key; }
     public Instant getAnexadoEm() { return anexadoEm; }
 }

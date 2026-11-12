@@ -52,9 +52,10 @@ public class DocumentoController {
                 // Documentos antigos sem MIME válido continuam sendo tratados como PDF.
             }
         }
+        byte[] conteudo = service.carregarConteudoDocumento(beneficioId, documentoId);
         return ResponseEntity.ok().contentType(tipoMime)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + documento.getNomeArquivo() + "\"")
-                .contentLength(documento.getConteudo().length)
-                .body(new ByteArrayResource(documento.getConteudo()));
+                .contentLength(conteudo.length)
+                .body(new ByteArrayResource(conteudo));
     }
 }

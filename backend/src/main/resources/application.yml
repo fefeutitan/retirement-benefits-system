@@ -31,6 +31,7 @@ app:
     endpoint: ${AWS_ENDPOINT_URL:}
     sns-topic-arn: ${AWS_SNS_TOPIC_ARN:}
     sqs-queue-url: ${AWS_SQS_QUEUE_URL:}
+    s3-bucket: ${AWS_S3_BUCKET:benefit-documents}
     consumer-delay-ms: ${AWS_CONSUMER_DELAY_MS:2000}
 
 ---
